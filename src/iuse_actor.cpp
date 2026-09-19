@@ -5826,7 +5826,7 @@ void multicooker_iuse::load( const JsonObject &obj )
     assign( obj, "charges_per_minute", charges_per_minute );
     assign( obj, "time_mult", time_mult );
     for( const std::string line : obj.get_array( "recipes" ) ) {
-        recipes.emplace( recipe_id(line) );
+        recipes.emplace( recipe_id( line ) );
     }
     for( const std::string line : obj.get_array( "subcategories" ) ) {
         subcategories.emplace( line );
