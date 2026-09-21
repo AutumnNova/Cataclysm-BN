@@ -5903,12 +5903,14 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
 {
     if( t ) {
         if( !it.units_sufficient( p, charges_per_minute ) ) {
-
-            //if we run out of battery just dump the crafts components on the ground
             for( detached_ptr<item> &item : it.remove_components() ) {
                 get_map().add_item_or_charges( pos, std::move( item ) );
             }
             it.deactivate();
+            it.erase_var( "RESULT" );
+            it.erase_var( "COOKTIME" );
+            it.erase_var( "BATCHCOUNT" );
+            it.erase_var( "RECIPE" );
             return 0;
         }
 
@@ -6039,6 +6041,10 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
 
         if( mc_stop == choice ) {
             if( query_yn( _( "Really stop?" ) ) ) {
+                //if user cancels craft just dump the crafts components on the ground
+                for( detached_ptr<item> &item : it.remove_components() ) {
+                    get_map().add_item_or_charges( pos, std::move( item ) );
+                }
                 it.deactivate();
                 it.erase_var( "RESULT" );
                 it.erase_var( "COOKTIME" );
