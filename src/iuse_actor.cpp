@@ -5917,12 +5917,12 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
         int cooktime = it.get_var( "COOKTIME", -1 );
         cooktime -= 100;
 
-        if( cooktime <= 0 && it.get_var("RESULT") != "" ) {
+        if( cooktime <= 0 && it.get_var( "RESULT" ) != "" ) {
             it.deactivate();
             it.erase_var( "COOKTIME" );
 
             //mirroring a lot of behavior in complete_craft except for set_kcal_mult
-			//you dont get kcal benifits from your cooking skill because you didnt actually craft the item
+            //you dont get kcal benifits from your cooking skill because you didnt actually craft the item
 
             std::vector<detached_ptr<item>> used = it.remove_components();
             std::vector<item *> used_items;
@@ -5931,10 +5931,11 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
                 used_items.push_back( &*it );
             }
 
-			auto crafted_item = item::spawn( it.get_var( "RESULT" ), calendar::turn, it.get_var( "BATCHCOUNT", 1 ) );
+            auto crafted_item = item::spawn( it.get_var( "RESULT" ), calendar::turn, it.get_var( "BATCHCOUNT",
+                                             1 ) );
 
-			//basically just a copy past of inherit_flags() to well... inherit flags
-			//cant use the existing method as it requires passing a recipe and we dont have that
+            //basically just a copy past of inherit_flags() to well... inherit flags
+            //cant use the existing method as it requires passing a recipe and we dont have that
             for( const item * const &item : used_items ) {
                 for( const flag_id &f : item->get_flags() ) {
                     if( f->craft_inherit() ) {
@@ -5948,11 +5949,11 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
                 }
                 if( item->has_flag( flag_HIDDEN_POISON ) ) {
                     crafted_item->poison = item->poison;
-				}
+                }
             }
 
             if( crafted_item->is_food() && !( crafted_item->has_flag( flag_NUTRIENT_OVERRIDE ) ) ) {
-                set_components( *crafted_item, used_items , it.get_var( "BATCHCOUNT", 1 ), 0 );
+                set_components( *crafted_item, used_items, it.get_var( "BATCHCOUNT", 1 ), 0 );
             }
 
             const auto relative_rot = highest_component_relative_rot( used_items );
@@ -5971,7 +5972,7 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
             }
 
             //finally insert our crafted item to be removed by the player later on
-            it.put_in( std::move ( crafted_item ) );
+            it.put_in( std::move( crafted_item ) );
             it.erase_var( "BATCHCOUNT" );
             it.erase_var( "RESULT" );
 
@@ -6163,10 +6164,10 @@ int multicooker_iuse::use( player &p, item &it, bool t, const tripoint_bub_ms &p
                     std::vector<detached_ptr<item>> tmp = p.consume_items( component, batchcount, filter );
                     used.insert( used.end(), std::make_move_iterator( tmp.begin() ),
                                  std::make_move_iterator( tmp.end() ) );
-				}
+                }
 
-				//add recipe compontents to the multicooker, because we need to reference them later when the item is actually crafted
-				//yes this is a bit weird but its the sanest method to do this
+                //add recipe compontents to the multicooker, because we need to reference them later when the item is actually crafted
+                //yes this is a bit weird but its the sanest method to do this
                 for( detached_ptr<item> &item : used ) {
                     it.add_component( std::move( item ) );
                 }

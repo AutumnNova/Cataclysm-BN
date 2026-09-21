@@ -52,7 +52,7 @@ auto highest_component_relative_rot( const std::vector<item *> &components ) -> 
 void complete_craft( Character &who, item &craft );
 
 void set_components( item &of, const std::vector<item *> &used,
-                            const int batch_size, const size_t offset );
+                     const int batch_size, const size_t offset );
 
 namespace crafting
 {
